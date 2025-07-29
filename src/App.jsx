@@ -4,7 +4,7 @@ function App() {
       <nav className="h-25 w-full flex justify-between items-center px-10 py-4 bg-black shadow-lg">
         <div className="flex gap-4 items-center">
           <img
-            src="src/assets/briefly-logo-pack/brieflyLogoPng.png"
+            src="/brieflyLogoPng.png"
             alt="Briefly Logo"
             className="w-12 h-12"
           />
@@ -32,7 +32,7 @@ function App() {
 
       <main className="w-full flex-1 flex flex-col justify-center items-center text-center px-4">
         <img
-          src="src/assets/briefly-logo-pack/brieflyLogoPng.png"
+          src="/brieflyLogoPng.png"
           alt="Briefly Logo"
           className="w-64 mb-8 animate-pulse hover:drop-shadow-[0_0_4rem_#fff9559e] transition duration-300"
         />
