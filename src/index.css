@@ -1,5 +1,6 @@
 @import "tailwindcss";
 
+
 @font-face {
   font-family: 'Geist';
   src: url('./assets/fonts/Geist/Geist-Thin.woff2') format('woff2');
@@ -272,4 +273,21 @@ body {
 
 .animate-rotate-slow {
   animation: slow-rotate 1s ease-in-out infinite;
+}
+
+@layer utilities {
+
+  .hide-scrollbar {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .hide-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  ::selection {
+    background-color: white;
+    color: black;
+  }
 }
