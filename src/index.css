@@ -259,6 +259,7 @@
 
 body {
   font-family: 'Outfit', sans-serif;
+  cursor: default;
 }
 
 
@@ -290,4 +291,8 @@ body {
     background-color: white;
     color: black;
   }
+}
+
+html{
+  scroll-behavior: smooth;
 }
