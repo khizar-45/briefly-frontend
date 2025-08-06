@@ -11,6 +11,7 @@ const LandingPage = () => {
     <div className="w-full flex flex-col text-white overflow-x-hidden bg-linear-to-b from-[#000000] to-[#191919] px-2">
       <main className="min-h-[150dvh] max-w-4xl flex-1 -z-0 flex flex-col items-center text-center px-4 mx-auto lg:flex-col md:flex-col lg:items-center lg:justify-items-start">
         <div className="absolute inset-0 h-100vh w-full -z-10 [background:radial-gradient(200%_80%_at_50%_0%,_hsl(56,100%,25%)_0%,_transparent_80%)] md:[background:radial-gradient(100%_80%_at_50%_0%,_hsl(56,100%,25%)_0%,_transparent_80%)]" />
+
         <section
           id="home"
           className="max-w-4xl flex flex-col pt-[20vh] justify-center items-center text-center px-4 mx-auto lg:flex-row md:flex-col lg:items-start lg:pt-[25vh]"
@@ -20,7 +21,6 @@ const LandingPage = () => {
             alt="Briefly Logo"
             className="w-30 md:w-44 lg:w-56 mb-8 md:mb-10 hover:drop-shadow-[0_0_4rem_rgba(255,249,85,0.6)] transition duration-300 lg:mr-6"
           />
-
           <div className="mx-auto flex flex-col items-center justify-items-start text-white text-center transition">
             <h1 className="text-4xl md:text-5xl font-bold mb-6 leading-tight">
               Instant YouTube Summaries
@@ -39,6 +39,7 @@ const LandingPage = () => {
             <GoogleLoginButton />
           </div>
         </section>
+
         <section
           id="features"
           className="max-w-4xl flex flex-col items-center justify-center text-center px-4 mx-auto pt-[15vh] lg:pt-[20vh]"
@@ -107,6 +108,7 @@ const LandingPage = () => {
             </CometCard>
           </div>
         </section>
+
         <section
           id="about"
           className="max-w-4xl flex flex-col items-center justify-center text-center px-4 mx-auto pt-[10vh] lg:pt-[15vh]"
