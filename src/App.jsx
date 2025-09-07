@@ -1,13 +1,17 @@
-import Button from "./components/Button";
+import { Routes } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Homepage from "./pages/Home";
 import LandingPage from "./pages/LandingPage";
+import { Route } from "react-router-dom";
 
 function App() {
   return (
     <>
-    <Navbar />
-    <LandingPage/>
+
+    <Routes>
+      <Route path="/" element={<LandingPage />} />
+      <Route path="/summarize" element={<Homepage />} />
+    </Routes>
     </>
   );
 }

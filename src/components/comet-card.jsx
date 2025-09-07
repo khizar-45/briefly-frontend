@@ -65,7 +65,7 @@ export const CometCard = ({
           z: 50,
           transition: { duration: 0.2 },
         }}
-        className="relative flex flex-col justify-center items-center min-h-60 md:min-h-70 lg:min-h-80 w-full rounded-2xl border border-white/30 bg-[#111111] p-6 transition-all duration-100"
+        className="relative flex flex-col justify-center items-center min-h-50 md:min-h-60 lg:min-h-75 w-full rounded-2xl border border-white/30 bg-[#111111] p-6 transition-all duration-100"
       >
         {children}
 
