@@ -4,7 +4,6 @@ import { Keyboard, Clipboard } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import html2canvas from "html2canvas-pro";
-import jsPDF from "jspdf";
 import axios from "axios";
 import { motion } from "motion/react";
 import { toPng } from "html-to-image";

@@ -297,6 +297,6 @@ html{
   scroll-behavior: smooth;
 }
 
-:root {
+@theme  {
     --color-primary: hsl(56,100%,50%);
 }
