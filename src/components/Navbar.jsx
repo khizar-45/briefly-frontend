@@ -9,21 +9,21 @@ const Navbar = () => {
           <a
             href="#home"
             rel="noopener noreferrer"
-            className="text-gray-400 text-xs md:text-sm hover:brightness-150 active:scale-90 transition duration-300"
+            className="text-gray-400 text-xs md:text-sm hover:text-primary active:scale-90 transition duration-300"
           >
             Home
           </a>
           <a
             href="#features"
             rel="noopener noreferrer"
-            className="text-gray-400 text-xs md:text-sm hover:brightness-150 active:scale-90 transition duration-300"
+            className="text-gray-400 text-xs md:text-sm hover:text-primary active:scale-90 transition duration-300"
           >
             Features
           </a>
           <a
             href="#about"
             rel="noopener noreferrer"
-            className="text-gray-400 text-xs md:text-sm hover:brightness-150 active:scale-90 transition duration-300"
+            className="text-gray-400 text-xs md:text-sm hover:text-primary active:scale-90 transition duration-300"
           >
             About
           </a>

@@ -9,9 +9,11 @@ import { motion } from "motion/react";
 import Homepage from "./Home";
 import { Route, Link } from "react-router-dom";
 import { features } from "../data/features";
+import DotsBackground from "../components/dottedBg";
 
 const LandingPage = () => {
   return (
+    <>
     <div className="w-full flex flex-col text-white overflow-x-hidden bg-linear-to-b from-[#000000] to-[#191919] px-2">
       <Navbar />
       <main className="min-h-[150dvh] max-w-4xl flex-1 -z-0 flex flex-col items-center text-center px-4 mx-auto lg:flex-col md:flex-col lg:items-center lg:justify-items-start">
@@ -34,14 +36,14 @@ const LandingPage = () => {
               Instant YouTube Summaries
               <br />
               with{" "}
-              <span className="bg-[hsl(56,100%,50%)] px-2 text-black border-r-4 border-white inline-block leading-[1.2]">
+              <span className="bg-primary px-2 text-black border-r-4 border-white inline-block leading-[1.2]">
                 Power of AI
               </span>
             </h1>
             <p className="text-gray-400 mb-2 max-w-xl">
               A handy demo tool that turns any YouTube video into a short, easy-to-read summary. Powered by a Python microservice, Gemini API, and a clean React UI.
             </p>
-            <h4 className="text-sm font-medium text-[hsl(56,100%,50%)] mt-2 mb-4">
+            <h4 className="text-sm font-medium text-primary mt-2 mb-4">
               Demo project! service may not be online 24/7. Reach out via mail/DM if you’d like to try
             </h4>
 
@@ -60,7 +62,7 @@ const LandingPage = () => {
         >
           <h2 className="text-4xl text-center">
             What Makes Us{" "}
-            <span className="bg-[hsl(56,100%,50%)] px-2 text-black border-r-4 border-white inline-block leading-[1.2] font-bold">
+            <span className="bg-primary px-2 text-black border-r-4 border-white inline-block leading-[1.2] font-bold">
               Different
             </span>
           </h2>
@@ -70,7 +72,7 @@ const LandingPage = () => {
                 key={index}
                 className="flex flex-col justify-between max-w-xl min-h-10 rounded-2xl bg-transparent"
               >
-                <h3 className="text-xl font-semibold text-[hsl(56,100%,50%)] mb-2">
+                <h3 className="text-xl font-semibold text-primary mb-2">
                   {item.title}
                 </h3>
                 <p className="text-sm text-gray-400 max-w-[90%]">{item.description}</p>
@@ -88,12 +90,12 @@ const LandingPage = () => {
         >
           <h2 className="text-4xl text-center mb-8">
             About the{" "}
-            <span className="bg-[hsl(56,100%,50%)] px-2 text-black border-r-4 border-white inline-block leading-[1.2] font-bold">
+            <span className="bg-primary px-2 text-black border-r-4 border-white inline-block leading-[1.2] font-bold">
               Creator
             </span>
           </h2>
           <div className="flex-1">
-            <h3 className="text-lg font-medium text-[hsl(56,100%,50%)] mb-2">
+            <h3 className="text-lg font-medium text-primary mb-2">
               Hey, I'm Khizar Ali !
             </h3>
             <p className="text-sm text-gray-400 max-w-2xl">
@@ -109,28 +111,28 @@ const LandingPage = () => {
               target="_blank"
               rel="noopener noreferrer"
             >
-              <Github className="w-6 h-6 hover:text-[hsl(56,100%,50%)] transition" />
+              <Github className="w-6 h-6 hover:text-primary transition" />
             </a>
             <a
               href="https://linkedin.com/in/khizar45"
               target="_blank"
               rel="noopener noreferrer"
             >
-              <Linkedin className="w-6 h-6 hover:text-[hsl(56,100%,50%)] transition" />
+              <Linkedin className="w-6 h-6 hover:text-primary transition" />
             </a>
             <a
               href="mailto:skkhizarali45@gmail.com"
               target="_blank"
               rel="noopener noreferrer"
             >
-              <Mail className="w-6 h-6 hover:text-[hsl(56,100%,50%)] transition" />
+              <Mail className="w-6 h-6 hover:text-primary transition" />
             </a>
             <a
               href="https://instagram.com/_khizar45"
               target="_blank"
               rel="noopener noreferrer"
             >
-              <Instagram className="w-6 h-6 hover:text-[hsl(56,100%,50%)] transition" />
+              <Instagram className="w-6 h-6 hover:text-primary transition" />
             </a>
           </div>
           <p className="text-gray-400 max-w-xl text-sm py-6">
@@ -142,6 +144,7 @@ const LandingPage = () => {
         </motion.section>
       </main>
     </div>
+    </>
   );
 };
 

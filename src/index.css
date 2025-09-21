@@ -296,3 +296,7 @@ body {
 html{
   scroll-behavior: smooth;
 }
+
+@theme  {
+    --color-primary: hsl(56,100%,50%);
+}

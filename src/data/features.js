@@ -12,16 +12,16 @@ export const features = [
   {
     title: "Backend with Python Microservice",
     description:
-      "The summarization runs through a Python microservice hosted via ngrok. It’s available as a demo service — not 24/7 — so access may vary depending on server availability.",
+      "The summarization runs through a Python microservice hosted via ngrok. It’s available as a demo service, not 24/7, so access may vary depending on server availability.",
   },
   {
-    title: "Instant Export to PDF",
+    title: "Instant Photo Download",
     description:
-      "Download a clean, well-formatted PDF of any summary for offline reading, sharing, or archiving — fast and hassle-free.",
+      "Grab summary photo instantly with a single click! no waiting, no extra steps. Perfect for quickly saving, sharing, or keeping a snapshot for later, all in a clean and hassle-free way.",
   },
   {
     title: "Browser Extension (Coming Soon)",
     description:
-      "Get Briefly right inside YouTube — click the Summarize button on any video and get an instant summary without switching tabs.",
+      "Get Briefly right inside YouTube! click the Summarize button on any video and get an instant summary without switching tabs.",
   },
 ];

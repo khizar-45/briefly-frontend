@@ -3,15 +3,18 @@ import React, { useRef, useState } from "react";
 import { Keyboard, Clipboard } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import html2canvas from "html2canvas";
+import html2canvas from "html2canvas-pro";
 import jsPDF from "jspdf";
 import axios from "axios";
 import { motion } from "motion/react";
+import { toPng } from "html-to-image";
 
 const Homepage = () => {
+  const fakeSummary =
+    '# Big Fake Markdown for Testing\n\n## Section 1: Lists\n- Item A\n- Item B\n  - Subitem B1\n  - Subitem B2\n- Item C\n\n1. Step one\n2. Step two\n3. Step three\n   1. Substep a\n   2. Substep b\n\n---\n\n## Section 2: Code Blocks\nHere is some **JavaScript**:\n\n```javascript\nfunction greet(name) {\n  console.log("Hello, " + name + "!");\n}\ngreet("World");\n\nfor (let i = 0; i < 5; i++) {\n  console.log(i);\n}\n```\n\nAnd some **Python**:\n\n```python\ndef fibonacci(n):\n    if n <= 1:\n        return n\n    return fibonacci(n-1) + fibonacci(n-2)\n\nfor i in range(10):\n    print(fibonacci(i))\n```\n\n---\n\n## Section 3: Blockquotes\n> "The only way to do great work is to love what you do." – Steve Jobs\n\n---\n\n## Section 4: Links & Inline Code\nCheck out [React Docs](https://react.dev) for more info.\n\nInline code example: `const x = 42;`\n\n---\n\n## Section 5: Long Paragraph\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas semper. Aenean ultricies mi vitae est. Mauris placerat eleifend leo.\n\nAnother long paragraph here to make sure wrapping works fine. Repeat. Another long paragraph here to make sure wrapping works fine. Repeat. Another long paragraph here to make sure wrapping works fine. Repeat.\n\n---\n\n## Section 6: Table\n| Name     | Age | Role        |\n|----------|-----|-------------|\n| Alice    | 24  | Developer   |\n| Bob      | 29  | Designer    |\n| Charlie  | 32  | Manager     |\n\n--- \n\n## Section 7: More Headers\n### Subsection 1\nSome text under subsection 1.\n\n#### Sub-subsection 1.1\nDetails about sub-subsection 1.1.\n\n### Subsection 2\nSome text under subsection 2.\n\n#### Sub-subsection 2.1\nDetails about sub-subsection 2.1.\n \n#### Sub-subsection 2.2\nDetails about sub-subsection 2.2.\n ';
+
   const [link, setLink] = useState("");
-  // const [summary, setSummary] = useState("## Sample Title\n\n- point 1\n- point 2\n\nMore text... \n\n### Subtitle\n\n`code snippet`\n\n> blockquote \n\n[link](https://example.com) \n\n1. numbered list item 1\n2. numbered list item 2 \n\n```javascript\n// code block\nconsole.log('Hello, world!');\n```");
-  const [summary, setSummary] = useState("");
+  const [summary, setSummary] = useState();
   const [loadingPaste, setLoadingPaste] = useState(false);
   const [loadingSummary, setLoadingSummary] = useState(false);
   const [error, setError] = useState(null);
@@ -26,7 +29,9 @@ const Homepage = () => {
       setLink(text || "");
     } catch (err) {
       console.error("Clipboard read failed:", err);
-      alert("Couldn't read clipboard. Make sure your browser allows clipboard access.");
+      alert(
+        "Couldn't read clipboard. Make sure your browser allows clipboard access."
+      );
     } finally {
       setLoadingPaste(false);
     }
@@ -35,14 +40,18 @@ const Homepage = () => {
   const handleGenerateSummary = async () => {
     setError(null);
     if (!link) return alert("Paste a YouTube link first");
-    if (!BACKEND) return alert("Set VITE_BACKENDLINK in your .env (and restart dev server).");
+    if (!BACKEND)
+      return alert(
+        "No backend configured. Check environment variables."
+      );
 
     try {
       setLoadingSummary(true);
       setSummary("");
 
-      const resp = await axios.post(`${BACKEND}/summarize`, { videoUrl: link });
-      const serverSummary = (resp && resp.data && (resp.data.summary || resp.data)) || "";
+      const res = await axios.post(`${BACKEND}/summarize/generate-summary`, { videoUrl: link });
+      const serverSummary =
+        (res && res.data && res.data.cleanedSummary) || "";
 
       if (!serverSummary) setError("No summary returned from server.");
       else setSummary(String(serverSummary));
@@ -54,83 +63,96 @@ const Homepage = () => {
     }
   };
 
-  const handleExportPDF = async () => {
+  const handleDownload = async () => {
     if (!summaryRef.current) return alert("No summary to export.");
 
     try {
-      const element = summaryRef.current;
-
-      const canvas = await html2canvas(element, {
-        scale: 2,
-        useCORS: true,
-        backgroundColor: "#ffffff",
-        logging: false,
+      const dataUrl = await toPng(summaryRef.current, {
+        pixelRatio: 2,
+        backgroundColor: null,
       });
 
-      const imgData = canvas.toDataURL("image/png");
-      const pdf = new jsPDF({ unit: "pt", format: "a4" });
-
-      const pdfWidth = pdf.internal.pageSize.getWidth();
-      const pdfHeight = pdf.internal.pageSize.getHeight();
-
-      const imgWidth = canvas.width;
-      const imgHeight = canvas.height;
-      const renderedHeight = (imgHeight * pdfWidth) / imgWidth;
-
-      let heightLeft = renderedHeight;
-      let position = 0;
-
-      pdf.addImage(imgData, "PNG", 0, position, pdfWidth, renderedHeight);
-      heightLeft -= pdfHeight;
-
-      while (heightLeft > 0) {
-        position = position - pdfHeight;
-        pdf.addPage();
-        pdf.addImage(imgData, "PNG", 0, position, pdfWidth, renderedHeight);
-        heightLeft -= pdfHeight;
-      }
-
-      pdf.save("summary.pdf");
+      const link = document.createElement("a");
+      link.href = dataUrl;
+      link.download = "summary.png";
+      link.click();
     } catch (err) {
       console.error("Export failed", err);
-      alert("Could not export PDF. Check console for details.");
+      alert("Could not export image. Check console.");
     }
   };
 
   const heightClasses = "h-12 md:h-13 lg:h-14";
   const btnWidthClasses = "w-24 md:w-32 lg:w-40";
-  const pasteBtnSize = "w-8 h-8 md:w-18 md:h-9 lg:w-22 items-center justify-center lg:h-10";
+  const pasteBtnSize =
+    "w-8 h-8 md:w-18 md:h-9 lg:w-22 items-center justify-center lg:h-10";
 
   const mdComponents = {
-    h1: ({ node, ...props }) => <h1 className="text-xl md:text-2xl lg:text-3xl font-bold mt-3 mb-2" {...props} />,
-    h2: ({ node, ...props }) => <h2 className="text-lg md:text-xl lg:text-2xl font-semibold mt-2 mb-2" {...props} />,
-    h3: ({ node, ...props }) => <h3 className="text-base md:text-lg lg:text-xl font-semibold mt-2 mb-2" {...props} />,
-    p: ({ node, ...props }) => <p className="text-sm md:text-base lg:text-base leading-6 mb-2" {...props} />,
-    ul: ({ node, ...props }) => <ul className="list-disc ml-5 mb-2 space-y-1" {...props} />,
-    ol: ({ node, ...props }) => <ol className="list-decimal ml-5 mb-2 space-y-1" {...props} />,
-    li: ({ node, ...props }) => <li className="text-sm md:text-base lg:text-base" {...props} />,
-    a: ({ node, ...props }) => <a className="underline text-blue-400" {...props} />,
-    blockquote: ({ node, ...props }) => <blockquote className="border-l-4 pl-4 italic text-gray-300 my-2" {...props} />,
+    h1: ({ node, ...props }) => (
+      <h1
+        className="text-xl md:text-2xl lg:text-3xl font-bold mt-3 mb-2"
+        {...props}
+      />
+    ),
+    h2: ({ node, ...props }) => (
+      <h2
+        className="text-lg md:text-xl lg:text-2xl font-semibold mt-2 mb-2"
+        {...props}
+      />
+    ),
+    h3: ({ node, ...props }) => (
+      <h3
+        className="text-base md:text-lg lg:text-xl font-semibold mt-2 mb-2"
+        {...props}
+      />
+    ),
+    p: ({ node, ...props }) => (
+      <p
+        className="text-sm md:text-base lg:text-base leading-6 mb-2"
+        {...props}
+      />
+    ),
+    ul: ({ node, ...props }) => (
+      <ul className="list-disc ml-5 mb-2 space-y-1" {...props} />
+    ),
+    ol: ({ node, ...props }) => (
+      <ol className="list-decimal ml-5 mb-2 space-y-1" {...props} />
+    ),
+    li: ({ node, ...props }) => (
+      <li className="text-sm md:text-base lg:text-base" {...props} />
+    ),
+    a: ({ node, ...props }) => (
+      <a className="underline text-blue-400" {...props} />
+    ),
+    blockquote: ({ node, ...props }) => (
+      <blockquote
+        className="border-l-4 pl-4 italic text-gray-300 my-2"
+        {...props}
+      />
+    ),
     code: ({ inline, className, children, ...props }) =>
       inline ? (
         <code className="bg-gray-800 px-1 rounded text-xs" {...props}>
           {children}
         </code>
       ) : (
-        <pre className="bg-gray-900 p-3 rounded overflow-auto text-sm" {...props}>
+        <pre
+          className="bg-gray-900 p-3 rounded overflow-auto text-sm"
+          {...props}
+        >
           <code>{children}</code>
         </pre>
       ),
   };
 
   return (
-    <div className="w-full flex flex-col text-white overflow-x-hidden bg-gradient-to-b from-[#000000] to-[#191919] px-2 items-center">
-
-      <motion.main 
-       initial={{ filter: "blur(10px)" }}
-          animate={{ filter: "blur(0px)" }}
-          transition={{ duration: 0.4 }}
-          className="min-h-[100dvh] max-w-4xl flex flex-col items-center text-center px-4 w-full mx-auto">
+    <div className="w-full flex flex-col text-white overflow-x-hidden bg-gradient-to-b from-[#000000] to-[#0c0c0c] px-2 items-center">
+      <motion.main
+        initial={{ filter: "blur(10px)" }}
+        animate={{ filter: "blur(0px)" }}
+        transition={{ duration: 0.4 }}
+        className="min-h-[100dvh] max-w-4xl flex flex-col items-center text-center px-4 w-full mx-auto"
+      >
         <section className="w-full max-w-4xl mt-12 mx-auto">
           <div className="mb-6 w-44 md:w-54 lg:w-60 items-center mx-auto">
             <img
@@ -146,7 +168,7 @@ const Homepage = () => {
                 value={link}
                 onChange={(e) => setLink(e.target.value)}
                 placeholder="Paste a YT Link..."
-                className={`w-full ${heightClasses} pr-14 md:pr-16 lg:pr-20 bg-[#0b0b0b] border border-gray-800 rounded-xl px-4 text-sm placeholder:text-gray-500 outline-none focus:ring-1 focus:ring-[hsl(56,100%,50%)] transition`}
+                className={`w-full ${heightClasses} pr-14 md:pr-16 lg:pr-20 bg-[#0b0b0b] border border-white/30 rounded-xl px-4 text-sm placeholder:text-gray-500 outline-none focus:ring-1 focus:ring-primary transition`}
                 aria-label="YouTube link"
               />
 
@@ -157,14 +179,16 @@ const Homepage = () => {
                 type="button"
               >
                 <Clipboard className="w-3 h-3 md:w-4 md:h-4 lg:w-4 lg:h-4" />
-                <span className="hidden md:inline-block text-xs md:text-[0.8rem] lg:text-[1rem]">{loadingPaste ? "Pasting" : "Paste"}</span>
+                <span className="hidden md:inline-block text-xs md:text-[0.8rem] lg:text-[1rem]">
+                  {loadingPaste ? "Pasting" : "Paste"}
+                </span>
               </button>
             </div>
 
             <button
               onClick={handleGenerateSummary}
               disabled={loadingSummary}
-              className={`ml-0 ${btnWidthClasses} ${heightClasses} flex items-center justify-center rounded-xl font-medium text-sm text-black bg-[hsl(56,100%,50%)] hover:scale-[1.04] transition duration-200 disabled:opacity-60 disabled:cursor-not-allowed md:text-lg cursor-pointer`}
+              className={`ml-0 ${btnWidthClasses} ${heightClasses} flex items-center justify-center rounded-xl font-medium text-sm text-black bg-primary hover:scale-[1.04] transition duration-200 disabled:opacity-60 disabled:cursor-not-allowed md:text-lg cursor-pointer`}
             >
               {loadingSummary ? "Summarizing..." : "Summarize"}
             </button>
@@ -173,30 +197,44 @@ const Homepage = () => {
 
         {/* Export & Summary */}
         <section className="w-full max-w-4xl mt-4 mx-auto">
-          <div className="flex justify-end">
+          <div className="flex justify-between">
             <button
-              onClick={handleExportPDF}
-              disabled={!summary}
-              className={`${btnWidthClasses} ${heightClasses} flex items-center justify-center px-4 py-2 rounded-xl font-medium text-[0.75rem] ${
-                summary ? "bg-[hsl(56,100%,50%)] text-black md:text-[1rem] hover:scale-[1.04] transition duration-200 cursor-pointer" : "bg-gray-700 text-gray-300 cursor-not-allowed md:text-[1rem]"
+              onClick={() => setSummary(fakeSummary)}
+              className={`${btnWidthClasses} ${heightClasses} flex items-center justify-center px-4 py-2 rounded-xl font-medium text-[0.75rem] bg-primary text-black md:text-[1rem] hover:scale-[1.04] transition duration-200 cursor-pointer
               }`}
             >
-              Export PDF
+              Try Demo
+            </button>
+            <button
+              onClick={handleDownload}
+              disabled={!summary}
+              className={`${btnWidthClasses} ${heightClasses} flex items-center justify-center px-4 py-2 rounded-xl font-medium text-[0.75rem] ${
+                summary
+                  ? "bg-primary text-black md:text-[1rem] hover:scale-[1.04] transition duration-200 cursor-pointer"
+                  : "bg-gray-700 text-gray-300 cursor-not-allowed md:text-[1rem]"
+              }`}
+            >
+              Download
             </button>
           </div>
 
           {/* Summary container: expanded when summary exists */}
           <div
+            ref={summaryRef}
             className={`mt-4 w-full overflow-hidden transition-all duration-500 ${
-              summary ? "px-6 py-8 bg-[#070707] border border-gray-800 rounded-md mb-4" : "max-h-0 p-0"
+              summary
+                ? "px-6 pt-4 pb-6 bg-[#070707] border border-white/30 rounded-md mb-4"
+                : "max-h-0 p-0"
             }`}
           >
-            <div ref={summaryRef} className={`${summary ? "block" : "hidden"}`}>
+            <div className={`${summary ? "block" : "hidden"}`}>
               {error && <p className="text-red-400 mb-4">{error}</p>}
 
-              {/* Styled markdown rendering (h1/h2/ul/ol/ etc) */}
               <div className="text-left">
-                <ReactMarkdown remarkPlugins={[remarkGfm]} components={mdComponents}>
+                <ReactMarkdown
+                  remarkPlugins={[remarkGfm]}
+                  components={mdComponents}
+                >
                   {summary}
                 </ReactMarkdown>
               </div>
