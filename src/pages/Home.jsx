@@ -1,9 +1,8 @@
 // src/pages/Homepage.jsx
-import React, { useRef, useState } from "react";
-import { Keyboard, Clipboard } from "lucide-react";
+import React, { useRef, useState, useEffect } from "react";
+import { Keyboard, Clipboard, TriangleAlert } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import html2canvas from "html2canvas-pro";
 import axios from "axios";
 import { motion, AnimatePresence } from "motion/react";
 import { toPng } from "html-to-image";
@@ -17,7 +16,8 @@ const Homepage = () => {
       if (errorTimeout.current) clearTimeout(errorTimeout.current);
       return;
     }
-    setError(message);
+    setError("");
+    setTimeout(() => setError(message), 10);
 
     if (errorTimeout.current) clearTimeout(errorTimeout.current);
     errorTimeout.current = setTimeout(() => {
@@ -31,14 +31,27 @@ const Homepage = () => {
   const fakeSummary =
     '# Fake Markdown for Testing\n\n## Section 1: Lists\n- Item A\n- Item B\n  - Subitem B1\n  - Subitem B2\n- Item C\n\n1. Step one\n2. Step two\n3. Step three\n   1. Substep a\n   2. Substep b\n\n---\n\n## Section 2: Code Blocks\nHere is some **JavaScript**:\n\n```javascript\nfunction greet(name) {\n  console.log("Hello, " + name + "!");\n}\ngreet("World");\n\nfor (let i = 0; i < 5; i++) {\n  console.log(i);\n}\n```\n\nAnd some **Python**:\n\n```python\ndef fibonacci(n):\n    if n <= 1:\n        return n\n    return fibonacci(n-1) + fibonacci(n-2)\n\nfor i in range(10):\n    print(fibonacci(i))\n```\n\n---\n\n## Section 3: Blockquotes\n> "The only way to do great work is to love what you do." – Steve Jobs\n\n---\n\n## Section 4: Links & Inline Code\nCheck out [React Docs](https://react.dev) for more info.\n\nInline code example: `const x = 42;`\n\n---\n\n## Section 5: Long Paragraph\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas semper. Aenean ultricies mi vitae est. Mauris placerat eleifend leo.\n\nAnother long paragraph here to make sure wrapping works fine. Repeat. Another long paragraph here to make sure wrapping works fine. Repeat. Another long paragraph here to make sure wrapping works fine. Repeat.\n\n---\n\n## Section 6: Table\n| Name     | Age | Role        |\n|----------|-----|-------------|\n| Alice    | 24  | Developer   |\n| Bob      | 29  | Designer    |\n| Charlie  | 32  | Manager     |\n\n--- \n\n## Section 7: More Headers\n### Subsection 1\nSome text under subsection 1.\n\n#### Sub-subsection 1.1\nDetails about sub-subsection 1.1.\n\n### Subsection 2\nSome text under subsection 2.\n\n#### Sub-subsection 2.1\nDetails about sub-subsection 2.1.\n \n#### Sub-subsection 2.2\nDetails about sub-subsection 2.2.\n ';
 
-  const [link, setLink] = useState("");
-  const [summary, setSummary] = useState();
+  const [link, setLink] = useState(() => {
+    return sessionStorage.getItem("ytLink") || "";
+  });
+  const [summary, setSummary] = useState(() => {
+    return sessionStorage.getItem("ytSummary") || "";
+  });
   const [loadingPaste, setLoadingPaste] = useState(false);
   const [loadingSummary, setLoadingSummary] = useState(false);
   const [error, setError] = useState(null);
   const summaryRef = useRef(null);
 
   const BACKEND = import.meta.env.VITE_BACKENDLINK;
+
+  useEffect(() => {
+    sessionStorage.setItem("ytLink", link);
+  }, [link]);
+
+  useEffect(() => {
+    if (summary) sessionStorage.setItem("ytSummary", summary);
+    else sessionStorage.removeItem("ytSummary");
+  }, [summary]);
 
   const handlePasteFromClipboard = async () => {
     try {
@@ -56,12 +69,24 @@ const Homepage = () => {
   };
 
   const handleGenerateSummary = async () => {
-    throwError(null);
-    if (!link) return throwError("Paste a YouTube link first");
-    if (!YT_REGEX.test(link))
-      return throwError("Please enter a valid YouTube link.");
-    if (!BACKEND)
-      return throwError("No backend configured. Check environment variables.");
+    if (!link) {
+      setSummary("");
+      setError(null);
+      setTimeout(() => throwError("Paste a YouTube link first"), 10);
+      return;
+    }
+    if (!YT_REGEX.test(link)) {
+      setSummary("");
+      setError(null);
+      setTimeout(() => throwError("Please enter a valid YouTube link."), 10);
+      return;
+    }
+    if (!BACKEND) {
+      setSummary("");
+      setError(null);
+      setTimeout(() => throwError("No backend configured."), 10);
+      return;
+    }
 
     try {
       setLoadingSummary(true);
@@ -173,9 +198,10 @@ const Homepage = () => {
             animate={{ y: 0, opacity: 1, filter: "blur(0px)" }}
             exit={{ y: 50, opacity: 0, filter: "blur(4px)" }}
             transition={{ duration: 0.4 }}
-            className="text-center mb-6 bg-red-500 text-white rounded-xl py-2 px-4 w-fit mx-auto fixed bottom-0"
+            className="fixed bottom-0 left-1/2 transform -translate-x-1/2 mb-6 bg-red-500 rounded-xl py-2 px-4 w-fit flex items-center gap-2"
           >
-            {error}
+            <TriangleAlert className="w-4.5 h-4.5 text-white" />
+            <span className="text-white">{error}</span>
           </motion.div>
         )}
       </AnimatePresence>
@@ -187,7 +213,7 @@ const Homepage = () => {
         className="min-h-[100dvh] max-w-4xl flex flex-col items-center text-center px-4 w-full mx-auto"
       >
         <motion.section layout className="w-full max-w-4xl mt-12 mx-auto">
-          <div className="mb-6 w-44 md:w-54 lg:w-60 items-center mx-auto">
+          <div className="mb-6 w-44 md:w-54 lg:w-60 items-center mx-auto aspect-[1/1]">
             <img
               src="/briefly_png.png"
               alt="Briefly Logo"
@@ -201,7 +227,7 @@ const Homepage = () => {
                 value={link}
                 onChange={(e) => {
                   setLink(e.target.value);
-                  throwError(null);
+                  setError(null);
                 }}
                 placeholder="Paste a YT Link..."
                 className={`w-full ${heightClasses} pr-14 md:pr-16 lg:pr-20 bg-[#0b0b0b] border border-white/30 rounded-xl px-4 text-sm placeholder:text-gray-500 outline-none focus:ring-1 focus:ring-primary transition`}
