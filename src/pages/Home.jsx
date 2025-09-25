@@ -9,10 +9,21 @@ import { motion, AnimatePresence } from "motion/react";
 import { toPng } from "html-to-image";
 
 const Homepage = () => {
+  const errorTimeout = useRef(null);
+
   const throwError = (message) => {
-    if (!message) return setError(null);
+    if (!message) {
+      setError(null);
+      if (errorTimeout.current) clearTimeout(errorTimeout.current);
+      return;
+    }
     setError(message);
-    setTimeout(() => setError(null), 5000);
+
+    if (errorTimeout.current) clearTimeout(errorTimeout.current);
+    errorTimeout.current = setTimeout(() => {
+      setError(null);
+      errorTimeout.current = null;
+    }, 4000);
   };
 
   const YT_REGEX = /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/.+$/;
