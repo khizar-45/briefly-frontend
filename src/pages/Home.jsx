@@ -5,12 +5,18 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import html2canvas from "html2canvas-pro";
 import axios from "axios";
-import { motion } from "motion/react";
+import { motion, AnimatePresence } from "motion/react";
 import { toPng } from "html-to-image";
 
 const Homepage = () => {
+  const throwError = (message) => {
+    if (!message) return setError(null);
+    setError(message);
+    setTimeout(() => setError(null), 5000);
+  };
+
   const fakeSummary =
-    '# Big Fake Markdown for Testing\n\n## Section 1: Lists\n- Item A\n- Item B\n  - Subitem B1\n  - Subitem B2\n- Item C\n\n1. Step one\n2. Step two\n3. Step three\n   1. Substep a\n   2. Substep b\n\n---\n\n## Section 2: Code Blocks\nHere is some **JavaScript**:\n\n```javascript\nfunction greet(name) {\n  console.log("Hello, " + name + "!");\n}\ngreet("World");\n\nfor (let i = 0; i < 5; i++) {\n  console.log(i);\n}\n```\n\nAnd some **Python**:\n\n```python\ndef fibonacci(n):\n    if n <= 1:\n        return n\n    return fibonacci(n-1) + fibonacci(n-2)\n\nfor i in range(10):\n    print(fibonacci(i))\n```\n\n---\n\n## Section 3: Blockquotes\n> "The only way to do great work is to love what you do." – Steve Jobs\n\n---\n\n## Section 4: Links & Inline Code\nCheck out [React Docs](https://react.dev) for more info.\n\nInline code example: `const x = 42;`\n\n---\n\n## Section 5: Long Paragraph\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas semper. Aenean ultricies mi vitae est. Mauris placerat eleifend leo.\n\nAnother long paragraph here to make sure wrapping works fine. Repeat. Another long paragraph here to make sure wrapping works fine. Repeat. Another long paragraph here to make sure wrapping works fine. Repeat.\n\n---\n\n## Section 6: Table\n| Name     | Age | Role        |\n|----------|-----|-------------|\n| Alice    | 24  | Developer   |\n| Bob      | 29  | Designer    |\n| Charlie  | 32  | Manager     |\n\n--- \n\n## Section 7: More Headers\n### Subsection 1\nSome text under subsection 1.\n\n#### Sub-subsection 1.1\nDetails about sub-subsection 1.1.\n\n### Subsection 2\nSome text under subsection 2.\n\n#### Sub-subsection 2.1\nDetails about sub-subsection 2.1.\n \n#### Sub-subsection 2.2\nDetails about sub-subsection 2.2.\n ';
+    '# Fake Markdown for Testing\n\n## Section 1: Lists\n- Item A\n- Item B\n  - Subitem B1\n  - Subitem B2\n- Item C\n\n1. Step one\n2. Step two\n3. Step three\n   1. Substep a\n   2. Substep b\n\n---\n\n## Section 2: Code Blocks\nHere is some **JavaScript**:\n\n```javascript\nfunction greet(name) {\n  console.log("Hello, " + name + "!");\n}\ngreet("World");\n\nfor (let i = 0; i < 5; i++) {\n  console.log(i);\n}\n```\n\nAnd some **Python**:\n\n```python\ndef fibonacci(n):\n    if n <= 1:\n        return n\n    return fibonacci(n-1) + fibonacci(n-2)\n\nfor i in range(10):\n    print(fibonacci(i))\n```\n\n---\n\n## Section 3: Blockquotes\n> "The only way to do great work is to love what you do." – Steve Jobs\n\n---\n\n## Section 4: Links & Inline Code\nCheck out [React Docs](https://react.dev) for more info.\n\nInline code example: `const x = 42;`\n\n---\n\n## Section 5: Long Paragraph\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas semper. Aenean ultricies mi vitae est. Mauris placerat eleifend leo.\n\nAnother long paragraph here to make sure wrapping works fine. Repeat. Another long paragraph here to make sure wrapping works fine. Repeat. Another long paragraph here to make sure wrapping works fine. Repeat.\n\n---\n\n## Section 6: Table\n| Name     | Age | Role        |\n|----------|-----|-------------|\n| Alice    | 24  | Developer   |\n| Bob      | 29  | Designer    |\n| Charlie  | 32  | Manager     |\n\n--- \n\n## Section 7: More Headers\n### Subsection 1\nSome text under subsection 1.\n\n#### Sub-subsection 1.1\nDetails about sub-subsection 1.1.\n\n### Subsection 2\nSome text under subsection 2.\n\n#### Sub-subsection 2.1\nDetails about sub-subsection 2.1.\n \n#### Sub-subsection 2.2\nDetails about sub-subsection 2.2.\n ';
 
   const [link, setLink] = useState("");
   const [summary, setSummary] = useState();
@@ -28,7 +34,7 @@ const Homepage = () => {
       setLink(text || "");
     } catch (err) {
       console.error("Clipboard read failed:", err);
-      alert(
+      throwError(
         "Couldn't read clipboard. Make sure your browser allows clipboard access."
       );
     } finally {
@@ -37,33 +43,32 @@ const Homepage = () => {
   };
 
   const handleGenerateSummary = async () => {
-    setError(null);
-    if (!link) return alert("Paste a YouTube link first");
+    throwError(null);
+    if (!link) return throwError("Paste a YouTube link first");
     if (!BACKEND)
-      return alert(
-        "No backend configured. Check environment variables."
-      );
+      return throwError("No backend configured. Check environment variables.");
 
     try {
       setLoadingSummary(true);
       setSummary("");
 
-      const res = await axios.post(`${BACKEND}/summarize/generate-summary`, { videoUrl: link });
-      const serverSummary =
-        (res && res.data && res.data.cleanedSummary) || "";
+      const res = await axios.post(`${BACKEND}/summarize/generate-summary`, {
+        videoUrl: link,
+      });
+      const serverSummary = (res && res.data && res.data.cleanedSummary) || "";
 
-      if (!serverSummary) setError("No summary returned from server.");
+      if (!serverSummary) throwError("No summary returned from server.");
       else setSummary(String(serverSummary));
     } catch (err) {
       console.error("Summarize request failed", err);
-      setError("Failed to generate summary. Check console for details.");
+      throwError("Failed to generate summary. Check console for details.");
     } finally {
       setLoadingSummary(false);
     }
   };
 
   const handleDownload = async () => {
-    if (!summaryRef.current) return alert("No summary to export.");
+    if (!summaryRef.current) return throwError("No summary to export.");
 
     try {
       const dataUrl = await toPng(summaryRef.current, {
@@ -77,7 +82,7 @@ const Homepage = () => {
       link.click();
     } catch (err) {
       console.error("Export failed", err);
-      alert("Could not export image. Check console.");
+      throwError("Could not export image. Check console.");
     }
   };
 
@@ -145,14 +150,28 @@ const Homepage = () => {
   };
 
   return (
-    <div className="w-full flex flex-col text-white overflow-x-hidden bg-gradient-to-b from-[#000000] to-[#0c0c0c] px-2 items-center">
+    <div className="w-full flex flex-col text-white overflow-hidden bg-gradient-to-b from-[#000000] to-[#0c0c0c] px-2 items-center relative">
+      <AnimatePresence>
+        {error && (
+          <motion.div
+            initial={{ y: 50, opacity: 0, filter: "blur(4px)" }}
+            animate={{ y: 0, opacity: 1, filter: "blur(0px)" }}
+            exit={{ y: 50, opacity: 0, filter: "blur(4px)" }}
+            transition={{ duration: 0.4 }}
+            className="text-center mb-6 bg-red-500 text-white rounded-xl py-2 px-4 w-fit mx-auto fixed bottom-0"
+          >
+            {error}
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       <motion.main
         initial={{ filter: "blur(10px)" }}
         animate={{ filter: "blur(0px)" }}
         transition={{ duration: 0.4 }}
         className="min-h-[100dvh] max-w-4xl flex flex-col items-center text-center px-4 w-full mx-auto"
       >
-        <section className="w-full max-w-4xl mt-12 mx-auto">
+        <motion.section layout className="w-full max-w-4xl mt-12 mx-auto">
           <div className="mb-6 w-44 md:w-54 lg:w-60 items-center mx-auto">
             <img
               src="/briefly_png.png"
@@ -165,11 +184,23 @@ const Homepage = () => {
             <div className={`relative flex-1 ${heightClasses}`}>
               <input
                 value={link}
-                onChange={(e) => setLink(e.target.value)}
+                onChange={(e) => {
+                  setLink(e.target.value);
+                  throwError(null);
+                }}
                 placeholder="Paste a YT Link..."
                 className={`w-full ${heightClasses} pr-14 md:pr-16 lg:pr-20 bg-[#0b0b0b] border border-white/30 rounded-xl px-4 text-sm placeholder:text-gray-500 outline-none focus:ring-1 focus:ring-primary transition`}
                 aria-label="YouTube link"
               />
+
+              <div
+                className={`absolute top-0 right-0 z-0 rounded-xl bg-gradient-to-r from-transparent to-[#0b0b0b] via-[#0b0b0b] w-[30%] h-[100%] pointer-events-none`}
+              ></div>
+
+              {/* <div
+                className={`absolute top-0 left-0 z-0 rounded-lg bg-gradient-to-r to-transparent from-[#0b0b0b] w-[50%] h-[100%]`}
+              >
+              </div> */}
 
               <button
                 onClick={handlePasteFromClipboard}
@@ -192,7 +223,7 @@ const Homepage = () => {
               {loadingSummary ? "Summarizing..." : "Summarize"}
             </button>
           </div>
-        </section>
+        </motion.section>
 
         {/* Export & Summary */}
         <section className="w-full max-w-4xl mt-4 mx-auto">
@@ -227,7 +258,6 @@ const Homepage = () => {
             }`}
           >
             <div className={`${summary ? "block" : "hidden"}`}>
-              {error && <p className="text-red-400 mb-4">{error}</p>}
 
               <div className="text-left">
                 <ReactMarkdown
