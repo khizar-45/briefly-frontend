@@ -39,6 +39,7 @@ const Homepage = () => {
   });
   const [loadingPaste, setLoadingPaste] = useState(false);
   const [loadingSummary, setLoadingSummary] = useState(false);
+  const [summaryLength, setSummaryLength] = useState("small");
   const [error, setError] = useState(null);
   const summaryRef = useRef(null);
 
@@ -94,6 +95,7 @@ const Homepage = () => {
 
       const res = await axios.post(`${BACKEND}/summarize/generate-summary`, {
         videoUrl: link,
+        summaryLength,
       });
       const serverSummary = (res && res.data && res.data.cleanedSummary) || "";
 
@@ -269,13 +271,48 @@ const Homepage = () => {
         {/* Export & Summary */}
         <section className="w-full max-w-4xl mt-4 mx-auto">
           <div className="flex justify-between">
-            <button
-              onClick={() => setSummary(fakeSummary)}
-              className={`${btnWidthClasses} ${heightClasses} flex items-center justify-center px-4 py-2 rounded-xl font-medium text-[0.75rem] bg-primary text-black md:text-[1rem] hover:scale-[1.04] transition duration-200 cursor-pointer
-              }`}
-            >
-              Try Demo
-            </button>
+            {/* Dropdown for summary length */}
+            <div className="flex items-center gap-2">
+              <span className="text-sm md:text-base">Length:</span>
+              <select
+                value={summaryLength}
+                onChange={(e) => setSummaryLength(e.target.value)}
+                className="bg-[#0b0b0b] border border-white/30 rounded-lg px-3 py-2 text-sm md:text-base focus:ring-1 focus:ring-primary justify-center items-center outline-none text-white"
+              >
+                <option value="small" className="">
+                  Small
+                </option>
+                <option value="detailed">Detailed</option>
+              </select>
+            </div>
+
+            {/* <motion.div 
+            initial={{ opacity: 0, filter: "blur(4px)" }}
+            animate={{ opacity: 1, filter: "blur(0px)" }}
+            transition={{ duration: 0.3 }}
+            className="flex border rounded-xl overflow-hidden w-36 md:w-40 lg:w-44 justify-center border-white/30">
+              <button
+                onClick={() => setSummaryLength("small")}
+                className={`px-4 py-2 w-[50%] ${
+                  summaryLength === "small"
+                    ? "bg-primary text-black"
+                    : "bg-black text-white"
+                }`}
+              >
+                Small
+              </button>
+              <button
+                onClick={() => setSummaryLength("detailed")}
+                className={`px-4 py-2 w-[50%] ${
+                  summaryLength === "detailed"
+                    ? "bg-primary text-black"
+                    : "bg-black text-white"
+                }`}
+              >
+                Detailed
+              </button>
+            </motion.div> */}
+
             <button
               onClick={handleDownload}
               disabled={!summary}
@@ -286,6 +323,15 @@ const Homepage = () => {
               }`}
             >
               Download
+            </button>
+          </div>
+          <div className="my-4 w-full">
+            <button
+              onClick={() => setSummary(fakeSummary)}
+              className={`${btnWidthClasses} ${heightClasses} flex items-center justify-center px-4 py-2 rounded-xl font-medium text-[0.75rem] bg-primary text-black md:text-[1rem] hover:scale-[1.04] transition duration-200 cursor-pointer
+              }`}
+            >
+              Try Demo
             </button>
           </div>
 
