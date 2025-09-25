@@ -15,6 +15,8 @@ const Homepage = () => {
     setTimeout(() => setError(null), 5000);
   };
 
+  const YT_REGEX = /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/.+$/;
+
   const fakeSummary =
     '# Fake Markdown for Testing\n\n## Section 1: Lists\n- Item A\n- Item B\n  - Subitem B1\n  - Subitem B2\n- Item C\n\n1. Step one\n2. Step two\n3. Step three\n   1. Substep a\n   2. Substep b\n\n---\n\n## Section 2: Code Blocks\nHere is some **JavaScript**:\n\n```javascript\nfunction greet(name) {\n  console.log("Hello, " + name + "!");\n}\ngreet("World");\n\nfor (let i = 0; i < 5; i++) {\n  console.log(i);\n}\n```\n\nAnd some **Python**:\n\n```python\ndef fibonacci(n):\n    if n <= 1:\n        return n\n    return fibonacci(n-1) + fibonacci(n-2)\n\nfor i in range(10):\n    print(fibonacci(i))\n```\n\n---\n\n## Section 3: Blockquotes\n> "The only way to do great work is to love what you do." – Steve Jobs\n\n---\n\n## Section 4: Links & Inline Code\nCheck out [React Docs](https://react.dev) for more info.\n\nInline code example: `const x = 42;`\n\n---\n\n## Section 5: Long Paragraph\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas semper. Aenean ultricies mi vitae est. Mauris placerat eleifend leo.\n\nAnother long paragraph here to make sure wrapping works fine. Repeat. Another long paragraph here to make sure wrapping works fine. Repeat. Another long paragraph here to make sure wrapping works fine. Repeat.\n\n---\n\n## Section 6: Table\n| Name     | Age | Role        |\n|----------|-----|-------------|\n| Alice    | 24  | Developer   |\n| Bob      | 29  | Designer    |\n| Charlie  | 32  | Manager     |\n\n--- \n\n## Section 7: More Headers\n### Subsection 1\nSome text under subsection 1.\n\n#### Sub-subsection 1.1\nDetails about sub-subsection 1.1.\n\n### Subsection 2\nSome text under subsection 2.\n\n#### Sub-subsection 2.1\nDetails about sub-subsection 2.1.\n \n#### Sub-subsection 2.2\nDetails about sub-subsection 2.2.\n ';
 
@@ -45,6 +47,8 @@ const Homepage = () => {
   const handleGenerateSummary = async () => {
     throwError(null);
     if (!link) return throwError("Paste a YouTube link first");
+    if (!YT_REGEX.test(link))
+      return throwError("Please enter a valid YouTube link.");
     if (!BACKEND)
       return throwError("No backend configured. Check environment variables.");
 
@@ -258,7 +262,6 @@ const Homepage = () => {
             }`}
           >
             <div className={`${summary ? "block" : "hidden"}`}>
-
               <div className="text-left">
                 <ReactMarkdown
                   remarkPlugins={[remarkGfm]}
