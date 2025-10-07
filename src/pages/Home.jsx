@@ -334,7 +334,7 @@ const Homepage = () => {
           {/* Summary container: expanded when summary exists */}
           <div
             ref={summaryRef}
-            className={`mt-4 w-full overflow-hidden transition-all duration-500 ${
+            className={`mt-6 w-full overflow-hidden transition-all duration-500 ${
               summary
                 ? "px-6 pt-4 pb-6 bg-[#070707] border border-white/30 rounded-md mb-4"
                 : "max-h-0 p-0"

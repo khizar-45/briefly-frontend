@@ -51,7 +51,7 @@ const LandingPage = () => {
               <Link to="/summarize">
               <Button text={"Get Started"}></Button>
               </Link>
-              <a href="/Resume_SEP19.pdf" target="_blank" rel="noopener noreferrer">
+              <a href="/Resume_SEP19.pdf" target="_blank" rel="noopener noreferrer" download={true}>
               <Button text={"Download Resume"}></Button>
               </a>
               
