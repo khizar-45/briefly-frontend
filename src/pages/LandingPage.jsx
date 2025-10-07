@@ -9,12 +9,13 @@ import { motion } from "motion/react";
 import Homepage from "./Home";
 import { Route, Link } from "react-router-dom";
 import { features } from "../data/features";
-import DotsBackground from "../components/dottedBg";
 
 const LandingPage = () => {
+
+
   return (
     <>
-    <div className="w-full flex flex-col text-white overflow-x-hidden bg-linear-to-b from-[#000000] to-[#191919] px-2">
+    <div className="w-full flex flex-col text-white overflow-x-hidden bg-black px-2">
       <Navbar />
       <main className="min-h-[150dvh] max-w-4xl flex-1 -z-0 flex flex-col items-center text-center px-4 mx-auto lg:flex-col md:flex-col lg:items-center lg:justify-items-start">
         <div className="absolute inset-0 h-100vh w-full -z-10 [background:radial-gradient(200%_80%_at_50%_0%,_hsl(56,100%,25%)_0%,_transparent_80%)] md:[background:radial-gradient(100%_80%_at_50%_0%,_hsl(56,100%,25%)_0%,_transparent_80%)]" />
@@ -29,7 +30,7 @@ const LandingPage = () => {
           <img
             src="/briefly_png.png"
             alt="Briefly Logo"
-            className="w-40 md:w-52 lg:w-66 mb-8 md:mb-10 hover:drop-shadow-[0_0_4rem_rgba(255,249,85,1)] transition duration-300 lg:mr-6"
+            className="w-40 md:w-52 lg:w-66 mb-8 md:mb-10 hover:drop-shadow-[0_0_4rem_rgba(255,249,85,1)] transition duration-300 lg:mr-6 aspect-square"
           />
           <div className="mx-auto flex flex-col items-center justify-items-start text-white text-center transition">
             <h1 className="text-4xl md:text-5xl font-bold mb-6 leading-tight">
@@ -41,16 +42,41 @@ const LandingPage = () => {
               </span>
             </h1>
             <p className="text-gray-400 mb-2 max-w-xl">
-              A handy demo tool that turns any YouTube video into a short, easy-to-read summary. Powered by a Python microservice, Gemini API, and a clean React UI.
+              A tool that turns any YouTube video into a short, easy-to-read summary. Powered by a Python microservice, Gemini API, and a clean React UI.
             </p>
             <h4 className="text-sm font-medium text-primary mt-2 mb-4">
               Demo project! service may not be online 24/7. Reach out via mail/DM if you’d like to try
             </h4>
-
-            <Link to="/summarize">
+            <div className="flex flex-row gap-4">
+              <Link to="/summarize">
               <Button text={"Get Started"}></Button>
-            </Link>
+              </Link>
+              <a href="/Resume_SEP19.pdf" target="_blank" rel="noopener noreferrer">
+              <Button text={"Download Resume"}></Button>
+              </a>
+              
+            </div>
+            
+            
           </div>
+        </motion.section>
+
+        <motion.section
+        initial={{ filter: "blur(10px)" }}
+          animate={{ filter: "blur(0px)" }}
+          transition={{ duration: 0.4 }}
+          className="w-full flex flex-col justify-center items-center mt-25">
+            <div className="flex flex-row gap-2 justify-center items-center">
+              <p className="text-4xl text-center ">Summary</p> 
+              <span className="text-4xl text-center font-bold bg-primary px-2 text-black border-r-4 border-white inline-block leading-[1.2]">
+                Demo
+              </span>
+            </div>
+              <div className="w-full flex justify-center items-center mt-6 relative">
+                <div className="w-full h-full absolute top-0 left-0 mx-auto bg-gradient-to-b from-transparent via-transparent to-black"></div>
+                <img src="/Demo.png" alt="Demo Screenshot" className="w-[75%] mt-4 border-2 border-primary/30 rounded-4xl"/>
+              </div>
+            
         </motion.section>
 
         <motion.section
@@ -102,7 +128,7 @@ const LandingPage = () => {
               I'm a passionate full-stack developer from India, building
               projects that blend creativity with real-world usefulness. Briefly
               was born out of a need, I was tired of watching long YouTube
-              videos just to extract key points. So I built something better.
+              videos just to extract key points. So I built this.
             </p>
           </div>
           <div className="flex gap-7 justify-center items-center my-8">
@@ -135,6 +161,7 @@ const LandingPage = () => {
               <Instagram className="w-6 h-6 hover:text-primary transition" />
             </a>
           </div>
+
           <p className="text-gray-400 max-w-xl text-sm py-6">
             Built with ❤️ by Khizar Ali.
             <br />

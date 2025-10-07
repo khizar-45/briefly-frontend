@@ -200,10 +200,10 @@ const Homepage = () => {
             animate={{ y: 0, opacity: 1, filter: "blur(0px)" }}
             exit={{ y: 50, opacity: 0, filter: "blur(4px)" }}
             transition={{ duration: 0.4 }}
-            className="fixed bottom-0 left-1/2 transform -translate-x-1/2 mb-6 bg-red-500 rounded-xl py-2 px-4 w-fit flex items-center gap-2"
+            className="fixed bottom-0 left-1/2 transform -translate-x-1/2 mb-6 bg-red-500 rounded-xl py-2 px-4 flex items-center justify-center gap-2 max-w-[90%] text-center"
           >
-            <TriangleAlert className="w-4.5 h-4.5 text-white" />
-            <span className="text-white">{error}</span>
+            <TriangleAlert className="w-4.5 h-4.5 text-white flex-shrink-0" />
+            <span className="text-white text-sm break-words">{error}</span>
           </motion.div>
         )}
       </AnimatePresence>
@@ -232,13 +232,9 @@ const Homepage = () => {
                   setError(null);
                 }}
                 placeholder="Paste a YT Link..."
-                className={`w-full ${heightClasses} pr-14 md:pr-16 lg:pr-20 bg-[#0b0b0b] border border-white/30 rounded-xl px-4 text-sm placeholder:text-gray-500 outline-none focus:ring-1 focus:ring-primary transition`}
+                className={`w-full ${heightClasses} pr-12 md:pr-22 lg:pr-26 bg-[#0b0b0b] border border-white/30 rounded-xl px-4 text-sm placeholder:text-gray-500 outline-none focus:ring-1 focus:ring-primary transition `}
                 aria-label="YouTube link"
               />
-
-              <div
-                className={`absolute top-0 right-0 z-0 rounded-xl bg-gradient-to-r from-transparent to-[#0b0b0b] via-[#0b0b0b] w-[30%] h-[100%] pointer-events-none`}
-              ></div>
 
               {/* <div
                 className={`absolute top-0 left-0 z-0 rounded-lg bg-gradient-to-r to-transparent from-[#0b0b0b] w-[50%] h-[100%]`}
@@ -279,7 +275,7 @@ const Homepage = () => {
                 onChange={(e) => setSummaryLength(e.target.value)}
                 className="bg-[#0b0b0b] border border-white/30 rounded-lg px-3 py-2 text-sm md:text-base focus:ring-1 focus:ring-primary justify-center items-center outline-none text-white"
               >
-                <option value="small" className="">
+                <option value="small" className="active:bg-primary">
                   Small
                 </option>
                 <option value="detailed">Detailed</option>
@@ -355,6 +351,12 @@ const Homepage = () => {
               </div>
             </div>
           </div>
+
+          <div className={`${loadingSummary ? "block" : "hidden"}`}>
+              <div className="w-full flex flex-col justify-center items-center animate-pulse mt-4">
+                <img src="/briefly_png.png" className="h-25 w-25 animate-bounce"></img>
+              </div>
+            </div>
         </section>
       </motion.main>
     </div>

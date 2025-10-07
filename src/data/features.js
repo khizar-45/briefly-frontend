@@ -24,4 +24,9 @@ export const features = [
     description:
       "Get Briefly right inside YouTube! click the Summarize button on any video and get an instant summary without switching tabs.",
   },
+  {
+    title: "Choose Summary Length",
+    description:
+      "Select between 'Small' or 'Detailed' summaries based on your needs. Whether you want a short or a deep dive, Briefly lets you control how much detail you get.",
+  },
 ];
