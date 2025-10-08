@@ -65,7 +65,7 @@ const LandingPage = () => {
         initial={{ filter: "blur(10px)" }}
           animate={{ filter: "blur(0px)" }}
           transition={{ duration: 0.4 }}
-          className="w-full flex flex-col justify-center items-center mt-25">
+          className="w-full flex flex-col justify-center items-center mt-30">
             <div className="flex flex-row gap-2 justify-center items-center">
               <p className="text-4xl text-center ">Summary</p> 
               <span className="text-4xl text-center font-bold bg-primary px-2 text-black border-r-4 border-white inline-block leading-[1.2]">
@@ -74,7 +74,7 @@ const LandingPage = () => {
             </div>
               <div className="w-full flex justify-center items-center mt-6 relative">
                 <div className="w-full h-full absolute top-0 left-0 mx-auto bg-gradient-to-b from-transparent via-transparent to-black"></div>
-                <img src="/Demo.png" alt="Demo Screenshot" className="w-[75%] mt-4 border-2 border-primary/30 rounded-4xl"/>
+                <img src="/Demo.png" alt="Demo Screenshot" className="w-[100%] mt-4 border-2 border-primary/30 rounded-4xl"/>
               </div>
             
         </motion.section>
