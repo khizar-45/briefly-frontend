@@ -31,7 +31,7 @@ Access the live version of Briefly here: [Briefly Website](https://brieflyyt.ver
 | Styling | Tailwind CSS |
 | State Management | React Hooks (useState, useEffect, useRef) |
 | Libraries | react-router-dom, react-icons, html2canvas etc...|
-| Deployment | Vercel / Netlify |
+| Deployment | Vercel |
 
 ---
 
