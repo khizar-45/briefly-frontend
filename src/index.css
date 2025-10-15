@@ -258,7 +258,7 @@
 }
 
 body {
-  font-family: 'Outfit', sans-serif;
+  font-family: 'Outfit', 'Geist', sans-serif;
   cursor: default;
   background-color: black;
 }

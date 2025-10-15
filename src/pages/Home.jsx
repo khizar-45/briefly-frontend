@@ -1,11 +1,12 @@
 // src/pages/Homepage.jsx
 import React, { useRef, useState, useEffect } from "react";
-import { Keyboard, Clipboard, TriangleAlert } from "lucide-react";
+import { Keyboard, Clipboard, TriangleAlert, ArrowLeft } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import axios from "axios";
 import { motion, AnimatePresence } from "motion/react";
 import { toPng } from "html-to-image";
+import { Link } from "react-router-dom";
 
 const Homepage = () => {
   const errorTimeout = useRef(null);
@@ -41,18 +42,39 @@ const Homepage = () => {
   const [loadingSummary, setLoadingSummary] = useState(false);
   const [summaryLength, setSummaryLength] = useState("small");
   const [error, setError] = useState(null);
+  const [status, setStatus] = useState("Checking...");
   const summaryRef = useRef(null);
 
   const BACKEND = import.meta.env.VITE_BACKENDLINK;
+  const NGROK = import.meta.env.VITE_NGROK_LINK;
 
   useEffect(() => {
     sessionStorage.setItem("ytLink", link);
   }, [link]);
 
+
   useEffect(() => {
     if (summary) sessionStorage.setItem("ytSummary", summary);
     else sessionStorage.removeItem("ytSummary");
   }, [summary]);
+
+  const checkStatus = async () => {
+    const body = { "video_url" : "https://www.youtube.com/watch?v=LlkcvvGbs9I" }
+    try{
+      const res = await axios.post(`${NGROK}/transcript`, body);
+      console.log("Status check response:", res);
+      if(res.data && res.data.transcript){
+        setStatus("Online");
+      }
+    } catch(err){
+      console.error("Python server offline", err);
+      setStatus("Offline");
+    }
+  };
+
+  useEffect(() => {
+    checkStatus();
+  }, []);
 
   const handlePasteFromClipboard = async () => {
     try {
@@ -208,6 +230,14 @@ const Homepage = () => {
         )}
       </AnimatePresence>
 
+
+      <Link to="/">
+        <motion.div className="absolute top-0 left-0 p-6 rounded-full cursor-pointer">
+        <ArrowLeft className="w-6 h-6 text-white" />
+        </motion.div>
+      </Link>
+    
+
       <motion.main
         initial={{ filter: "blur(10px)" }}
         animate={{ filter: "blur(0px)" }}
@@ -215,14 +245,19 @@ const Homepage = () => {
         className="min-h-[100dvh] max-w-4xl flex flex-col items-center text-center px-4 w-full mx-auto"
       >
         <motion.section layout className="w-full max-w-4xl mt-12 mx-auto">
-          <div className="mb-6 w-44 md:w-54 lg:w-60 items-center mx-auto aspect-[1/1]">
+          {/* <div className="mb-6 w-44 md:w-54 lg:w-60 items-center mx-auto aspect-[1/1]">
             <img
               src="/briefly_png.png"
               alt="Briefly Logo"
               className="mx-auto mb-2 md:mb-4 hover:drop-shadow-[0_0_4rem_rgba(255,249,85,1)] transition duration-300"
             />
-          </div>
+          </div> */}
 
+          <div className="flex flex-col justify-center items-center py-30">
+            <h1 className="text-5xl font-semibold mb-2"> Paste a <span className="bg-primary px-2 text-black border-r-4 border-white inline-block leading-[1.2]">
+                Youtube
+              </span> Link</h1>
+          </div>
           <div className="flex items-center w-full gap-3">
             <div className={`relative flex-1 ${heightClasses}`}>
               <input
@@ -265,7 +300,7 @@ const Homepage = () => {
         </motion.section>
 
         {/* Export & Summary */}
-        <section className="w-full max-w-4xl mt-4 mx-auto">
+        <section className="w-full max-w-4xl mt-4 mx-auto justify-center items-center">
           <div className="flex justify-between">
             {/* Dropdown for summary length */}
             <div className="flex items-center gap-2">
@@ -308,6 +343,8 @@ const Homepage = () => {
                 Detailed
               </button>
             </motion.div> */}
+            <div className={` my-auto items-center ${status === "Online" ? "text-green-500" : status === "Offline" ? "text-red-500" : "text-primary"}`}>Status : {status}</div>
+
 
             <button
               onClick={handleDownload}
@@ -354,7 +391,7 @@ const Homepage = () => {
 
           <div className={`${loadingSummary ? "block" : "hidden"}`}>
               <div className="w-full flex flex-col justify-center items-center animate-pulse mt-4">
-                <img src="/briefly_png.png" className="h-25 w-25 animate-bounce"></img>
+                <img src="/briefly_png.png" className="h-25 w-25 animate-bounce mt-20"></img>
               </div>
             </div>
         </section>
