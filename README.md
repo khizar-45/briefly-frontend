@@ -1,12 +1,42 @@
-# React + Vite
+# Briefly - Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This is the **React + Tailwind** frontend for the Briefly web application, which allows users to summarize YouTube videos and manage their summary history.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
 
-## Expanding the ESLint configuration
+## Live Demo
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+Access the live version of Briefly here: [Briefly Website](https://brieflyyt.vercel.app)
+
+---
+
+
+## Features
+
+- Submit YouTube video links to generate summaries
+- Select summary length option
+- Export summaries as PNG  
+- Smooth navigation between pages using Motion.dev (Landing, Summarize)  
+- Responsive design with modern UI using Tailwind CSS  
+- Real-time feedback during summary generation  
+
+---
+
+## Tech Stack
+
+| Category | Technology |
+|-----------|-------------|
+| Frontend Framework | React.js |
+| Styling | Tailwind CSS |
+| State Management | React Hooks (useState, useEffect, useRef) |
+| Libraries | react-router-dom, react-icons, html2canvas etc...|
+| Deployment | Vercel |
+
+---
+
+
+## Contact / Queries
+
+This project is primarily for demonstration purposes and is not intended for public cloning or modification.  
+For any questions or collaboration inquiries, please reach out via email: [Click Here](mailto:skkhizarali45@gmail.com)
